@@ -53,8 +53,8 @@ class Login extends CI_Controller
         $this->load->library('form_validation');
         
         //$this->form_validation->set_rules('email', 'Email', 'required|valid_email|max_length[128]|trim');
-        //$this->form_validation->set_rules('username', 'Username', 'required|max_length[8]|');
-        $this->form_validation->set_rules('password', 'Password', 'required|max_length[32]');
+        $this->form_validation->set_rules('username', 'username', 'required');
+        $this->form_validation->set_rules('password', 'password', 'required|max_length[32]');
         
         if($this->form_validation->run() == FALSE)
         {
@@ -70,14 +70,13 @@ class Login extends CI_Controller
             $this->ldap->connect();
 
             if($this->ldap->authenticate('' , $username, $password)) {
-                echo ("Have Username");
+                //echo ("Have Username");
                 $userdata = $this->ldap->get_data($username,$password);
                 //echo $userdata['fname'].$userdata['email'].$userdata['code'];
                 $result = $this->login_model->loginMe($userdata['email'], $password);
                 if(count($result) > 0){
                     foreach ($result as $res){
-                        $sessionArray = array(  'userId'=>$res->userId, 
-                                                'username'=>$res->username,                   
+                        $sessionArray = array(  'username'=>$res->username,                   
                                                 'role'=>$res->roleId,
                                                 'roleText'=>$res->role,
                                                 'name'=>$res->name,
@@ -89,7 +88,7 @@ class Login extends CI_Controller
                     }
                 }else{
                     // Add Username in Database
-                    $name = 'System Administrator';
+                    $name = $username;
                     $email = $userdata['email'];
                     $username = $userdata['fname'] ." ". $userdata['lname'];
                     $password = $password;
@@ -101,8 +100,7 @@ class Login extends CI_Controller
                     $result = $this->login_model->loginMe($userdata['email'], $password);
                     if(count($result) > 0){
                         foreach ($result as $res){
-                            $sessionArray = array(  'userId'=>$res->userId, 
-                                                    'username'=>$res->username,                   
+                            $sessionArray = array(  'username'=>$res->username,                   
                                                     'role'=>$res->roleId,
                                                     'roleText'=>$res->role,
                                                     'name'=>$res->name,
@@ -115,15 +113,16 @@ class Login extends CI_Controller
                     }
                 }
 
-            } else {
-                $this->session->set_flashdata('error', 'Email or password mismatch');
-                $this->load->view('index');
+            } 
+            else {
+                $this->session->set_flashdata('error', 'Username or password mismatch');
+                $this->load->view('login');
             }
         }
     }
     public function showdashboard()
     {
-        $this->global['pageTitle'] = 'CodeInsect : Dashboard'; 
+        $this->global['pageTitle'] = 'Burapha : Dashboard'; 
         $this->loadViews("dashboard", $this->global, NULL , NULL); 
     }
 

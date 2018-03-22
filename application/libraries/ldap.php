@@ -32,7 +32,7 @@ class ldap {
                         $this->account_prefix = $this->CI->config->item('account_prefix','ldap_config');
                         $this->connection = @ldap_connect( $this->host, $this->port );
                         if( !$this->connection ) {
-                                return false;
+                            return false;
                         }
                 }catch (Exception $e) {									
 					return false;
@@ -82,7 +82,7 @@ class ldap {
                 'ou' => str_replace('OU=', '', explode(",", $info[0]['dn'])[1]),
                 );
             return $person_data;
-            //echo $info[0]['givenname'][0]." ".$info[0]['sn'][0]." ".$info[0]['mail'][0];
+            echo $info[0]['givenname'][0]." ".$info[0]['sn'][0]." ".$info[0]['mail'][0];
         }
 
 
